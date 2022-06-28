@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Weekplanner</string>
+    <string name="action_settings">Instellingen</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="weekoverzicht_fragment_label">Weekplanner overzicht</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <!--Dagen van de week-->
+    <string name="maandag">Maandag</string>
+    <string name="dinsdag">Dinsdag</string>
+    <string name="woensdag">Woensdag</string>
+    <string name="donderdag">Donderdag</string>
+    <string name="vrijdag">Vrijdag</string>
+    <string name="zaterdag">Zaterdag</string>
+    <string name="zondag">Zondag</string>
+    <string name="plusteken">Plusteken</string>
+    <string name="geen_activiteit">Vandaag nog geen activiteiten. Gebruik de plusknop om een activiteit toe te voegen.</string>
+    <string name="titel_hint">Kies een naam voor uw activiteit</string>
+</resources>
