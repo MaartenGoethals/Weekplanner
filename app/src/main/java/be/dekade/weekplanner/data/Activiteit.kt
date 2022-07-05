@@ -1,9 +1,14 @@
 package be.dekade.weekplanner.data
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.sql.Time
 import java.time.Duration
 
+@Entity(tableName = "activiteiten")
 data class Activiteit(
+    @PrimaryKey @ColumnInfo(name = "id")
     val id: Int,
     var titel: String,
     var notities: String,

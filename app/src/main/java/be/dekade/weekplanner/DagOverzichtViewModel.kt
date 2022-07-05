@@ -1,34 +1,34 @@
 package be.dekade.weekplanner
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import be.dekade.weekplanner.data.Activiteit
+import be.dekade.weekplanner.data.ActiviteitRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DagOverzichtViewModel : ViewModel() {
-    val activiteiten : LiveData<MutableList<Activiteit>> = MutableLiveData(mutableListOf<Activiteit>())
+@HiltViewModel
+class DagOverzichtViewModel @Inject internal constructor(
+    activiteitRepository: ActiviteitRepository,
+    private val savedStateHandle: SavedStateHandle
+): ViewModel() {
+    val activiteiten : LiveData<List<Activiteit>> = getWeekDag().switchMap{
+        if (it== DEFAULT_VALUE){
+            activiteitRepository.getActiviteiten()
+        }else{
+            activiteitRepository.getActiviteitenVoorDag(it)
+        }
+    }
 
-    init {
-        //TODO: get real data
-        activiteiten.value!!.add(Activiteit(
-            0,
-            "Voorbeeld",
-            "Dit is een voorbeeldactiviteit. %n je hoeft hier niks te doen.",
-            8,
-            0,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            -1,
-            -1,
-            true,
-            false
-        ))
-        Log.d("APP", "init() called")
+    private fun getWeekDag(): MutableLiveData<Int>{
+        return savedStateHandle.getLiveData(WEEKDAG_KEY, DEFAULT_VALUE)
+    }
+
+    fun setWeekDag(dag: Int){
+        savedStateHandle.set(WEEKDAG_KEY, dag)
+    }
+
+    companion object{
+        private const val DEFAULT_VALUE = -1
+        private const val WEEKDAG_KEY = "WEEKDAG_KEY"
     }
 }
