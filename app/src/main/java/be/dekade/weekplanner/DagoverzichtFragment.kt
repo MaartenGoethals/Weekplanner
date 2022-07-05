@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
+import be.dekade.weekplanner.adapters.ActiviteitListItemAdapter
 import be.dekade.weekplanner.databinding.FragmentDagoverzichtBinding
 
 /**
@@ -19,19 +21,27 @@ class DagoverzichtFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    private lateinit var viewModel: DagOverzichtViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        viewModel = ViewModelProvider(this).get(DagOverzichtViewModel::class.java)
         _binding = FragmentDagoverzichtBinding.inflate(inflater, container, false)
+        val adapter = ActiviteitListItemAdapter()
+        binding.activiteitenlijst.adapter = adapter
+
+        subscribeUi(adapter, binding)
         return binding.root
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    private fun subscribeUi(adapter: ActiviteitListItemAdapter, binding: FragmentDagoverzichtBinding) {
+        viewModel.activiteiten.observe(viewLifecycleOwner) { result ->
+            binding.heeftActiviteiten = !result.isNullOrEmpty()
+            adapter.submitList(result)
+        }
     }
 
     override fun onDestroyView() {

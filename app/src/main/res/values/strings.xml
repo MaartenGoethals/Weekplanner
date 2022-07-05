@@ -18,7 +18,11 @@
     <string name="vrijdag">Vrijdag</string>
     <string name="zaterdag">Zaterdag</string>
     <string name="zondag">Zondag</string>
+
+
     <string name="plusteken">Plusteken</string>
     <string name="geen_activiteit">Vandaag nog geen activiteiten. Gebruik de plusknop om een activiteit toe te voegen.</string>
     <string name="titel_hint">Kies een naam voor uw activiteit</string>
+
+    <string name="uur_format">%s:%2$s</string>
 </resources>

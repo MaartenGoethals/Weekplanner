@@ -9,6 +9,6 @@ class NieuweActiviteitViewModel : ViewModel() {
     val activiteit = MutableLiveData<Activiteit>()
 
     init {
-        activiteit.value = Activiteit("", "", 8, 0, 15, false, false, false, false,false,false, false, -1,-1,true)
+        activiteit.value = Activiteit(0,"", "", 8, 0, false, false, false, false,false,false, false, -1,-1, true, isAfgewerkt = false)
     }
 }
