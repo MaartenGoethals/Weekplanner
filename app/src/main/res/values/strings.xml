@@ -24,5 +24,14 @@
     <string name="geen_activiteit">Vandaag nog geen activiteiten. Gebruik de plusknop om een activiteit toe te voegen.</string>
     <string name="titel_hint">Kies een naam voor uw activiteit</string>
 
-    <string name="uur_format">%s:%2$s</string>
+    <string name="uur_format">%02d:%02d</string>
+    <string name="titel">Titel:</string>
+    <string name="notities">Notities:</string>
+    <string name="vul_hier_bijkomende_informatie_in">Vul hier bijkomende informatie in.</string>
+    <string name="startuur">Startuur:</string>
+    <string name="herhalingsdagen">Herhalingsdagen:</string>
+    <string name="notificaties_aan">Notificaties aan:</string>
+    <string name="bewaren">Bewaren</string>
+    <string name="activiteit_aanpassen">Aanpassen</string>
+    <string name="uitstellen">Uitstellen</string>
 </resources>

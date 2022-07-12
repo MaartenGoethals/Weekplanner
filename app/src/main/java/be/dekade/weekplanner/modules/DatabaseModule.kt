@@ -1,7 +1,7 @@
 package be.dekade.weekplanner.modules
 
 import android.content.Context
-import be.dekade.weekplanner.data.ActiviteitDao
+import be.dekade.weekplanner.data.ActiviteitenDagGegevensDao
 import be.dekade.weekplanner.data.AppDatabase
 import dagger.Module
 import dagger.Provides
@@ -21,7 +21,7 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideActiviteitDao(appDatabase: AppDatabase): ActiviteitDao{
+    fun provideActiviteitDao(appDatabase: AppDatabase): ActiviteitenDagGegevensDao{
         return appDatabase.activiteitDao()
     }
 }

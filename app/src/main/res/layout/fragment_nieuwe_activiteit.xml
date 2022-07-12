@@ -1,24 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="be.dekade.weekplanner.NieuweActiviteitViewModel" />
     </data>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".NieuweActiviteitFragment">
+
+        <TextView
+            android:id="@+id/titel_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/titel"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintBottom_toBottomOf="@id/titel_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/titel_text" />
 
         <EditText
             android:id="@+id/titel_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/titel_hint"
-            android:text="@{viewModel.activiteit.titel}" />
+            android:text="@={viewModel.activiteit.titel}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/titel_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/notities_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notities"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintBottom_toBottomOf="@id/notities_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/notities_text" />
+
+        <EditText
+            android:id="@+id/notities_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/vul_hier_bijkomende_informatie_in"
+            android:text="@={viewModel.activiteit.notities}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/notities_label"
+            app:layout_constraintTop_toBottomOf="@id/titel_text" />
+
+        <TextView
+            android:id="@+id/startuur_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/startuur"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintBottom_toBottomOf="@id/startuur_picker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/startuur_picker" />
+
+        <TimePicker
+            android:id="@+id/startuur_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:hour="@={viewModel.activiteit.startuur}"
+            android:minute="@={viewModel.activiteit.startminuut}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/startuur_label"
+            app:layout_constraintTop_toBottomOf="@id/notities_text" />
+
+        <TextView
+            android:id="@+id/herhalingsdagen_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/herhalingsdagen"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startuur_picker" />
+
+        <CheckBox
+            android:id="@+id/maandag_checkbox"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.maandag}"
+            android:text="@string/maandag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/startuur_picker" />
+
+        <CheckBox
+            android:id="@+id/dinsdag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.dinsdag}"
+            android:text="@string/dinsdag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/maandag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/woensdag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.woensdag}"
+            android:text="@string/woensdag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/dinsdag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/donderdag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.donderdag}"
+            android:text="@string/donderdag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/woensdag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/vrijdag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.vrijdag}"
+            android:text="@string/vrijdag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/donderdag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/zaterdag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.zaterdag}"
+            android:text="@string/zaterdag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/vrijdag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/zondag_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.zondag}"
+            android:text="@string/zondag"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="@id/maandag_checkbox"
+            app:layout_constraintTop_toBottomOf="@id/zaterdag_checkbox" />
+
+        <TextView
+            android:id="@+id/notificatie_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notificaties_aan"
+            android:textSize="@dimen/font_size"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/zondag_checkbox" />
+
+        <CheckBox
+            android:id="@+id/notificatie_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={viewModel.activiteit.notificatieAan}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/zondag_checkbox"
+            />
+
+        <Button
+            app:layout_constraintTop_toBottomOf="@id/notificatie_checkbox"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bewaren"
+            android:onClick="@{() ->viewModel.submitActiviteit()}"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

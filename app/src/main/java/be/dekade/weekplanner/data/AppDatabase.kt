@@ -8,9 +8,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 const val DATABASE_NAME = "Weekplanner-db"
 
-@Database(entities = [Activiteit::class], version = 1, exportSchema = false)
+@Database(entities = [Activiteit::class, DagGegevens::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun activiteitDao(): ActiviteitDao
+    abstract fun activiteitDao(): ActiviteitenDagGegevensDao
 
     companion object{
         // For Singleton instantiation
@@ -26,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
 
         // Create the database.
         private fun buildDatabase(context: Context): AppDatabase {
-            return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
+            return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).fallbackToDestructiveMigration()
                 .addCallback(
                     object : RoomDatabase.Callback() {
                         override fun onCreate(db: SupportSQLiteDatabase) {

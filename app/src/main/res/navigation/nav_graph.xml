@@ -12,17 +12,11 @@
         tools:layout="@layout/fragment_weekoverzicht">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_FirstFragment_to_nieuweActiviteitFragment"
+            app:destination="@id/nieuweActiviteitFragment" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="be.dekade.weekplanner.DagoverzichtFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_dagoverzicht">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+        android:id="@+id/nieuweActiviteitFragment"
+        android:name="be.dekade.weekplanner.NieuweActiviteitFragment"
+        android:label="NieuweActiviteitFragment" />
 </navigation>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import be.dekade.weekplanner.adapters.WeekdagPagerAdapter
@@ -57,8 +58,7 @@ class WeekoverzichtFragment : Fragment() {
         }.attach()
 
         binding.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            navigateToNieuweActiviteitFragment()
         }
     }
 
@@ -67,4 +67,8 @@ class WeekoverzichtFragment : Fragment() {
         _binding = null
     }
 
+    private fun navigateToNieuweActiviteitFragment(){
+
+        findNavController().navigate(R.id.nieuweActiviteitFragment)
+    }
 }

@@ -3,15 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
+        <import type="android.view.View"/>
         <variable
-            name="activiteit"
-            type="be.dekade.weekplanner.data.Activiteit" />
+            name="data"
+            type="be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag" />
+        <variable
+            name="isExpanded"
+            type="Boolean" />
+        <variable
+            name="expandClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="aanpassenClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="uitstellenClickListener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="afgewerktClickListener"
+            type="android.view.View.OnClickListener" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/listitem_padding"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:onClick="@{expandClickListener}">
         <CheckBox
             android:id="@+id/afgewerkt_checkbox"
             android:layout_width="60dp"
@@ -20,13 +37,14 @@
             android:background="?android:listChoiceIndicatorMultiple"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:checked="@{activiteit.isAfgewerkt}"/>
+            app:layout_constraintBottom_toBottomOf="@id/uur"
+            android:checked="@={data.dagGegevens.afgewerkt}"
+            android:onClick="@{afgewerktClickListener}"/>
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{activiteit.titel}"
+            android:text="@{data.activiteit.titel}"
             android:textSize="@dimen/title_size"
             app:layout_constraintStart_toEndOf="@id/afgewerkt_checkbox"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +56,51 @@
             app:layout_constraintStart_toEndOf="@id/afgewerkt_checkbox"
             app:layout_constraintTop_toBottomOf="@id/title"
             android:textSize="@dimen/font_size"
-            android:text="@{@string/uur_format(activiteit.startuur, activiteit.startminuut)}"
+            android:text="@{data.dagGegevens.uitstelUur > 0 ? @string/uur_format(data.dagGegevens.uitstelUur, data.dagGegevens.uitstelMinuut) : @string/uur_format(data.activiteit.startuur, data.activiteit.startminuut)}"
             tools:text="8:00"/>
+        <ImageView
+            android:id="@+id/expand_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/afgewerkt_checkbox"
+            app:layout_constraintBottom_toBottomOf="@id/afgewerkt_checkbox"
+            android:src="@android:drawable/ic_menu_more"
+            android:visibility="@{isExpanded? View.GONE : View.VISIBLE}"
+            />
+
+        <ImageView
+            android:id="@+id/collapse_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="180"
+            android:src="@android:drawable/ic_menu_more"
+            android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/afgewerkt_checkbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/afgewerkt_checkbox" />
+        <Button
+            android:id="@+id/aanpassen_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/activiteit_aanpassen"
+            android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@id/uur"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/uitstellen_button"
+            android:drawableLeft="@android:drawable/ic_menu_edit"
+            android:onClick="@{aanpassenClickListener}"/>
+
+        <Button
+            android:id="@+id/uitstellen_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@android:drawable/ic_menu_recent_history"
+            android:text="@string/uitstellen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/aanpassen_button"
+            android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
+            app:layout_constraintTop_toBottomOf="@id/uur"
+            android:onClick="@{uitstellenClickListener}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

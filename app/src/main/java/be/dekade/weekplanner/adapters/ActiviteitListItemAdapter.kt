@@ -7,28 +7,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import be.dekade.weekplanner.R
-import be.dekade.weekplanner.data.Activiteit
+import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
 import be.dekade.weekplanner.databinding.ListItemActiviteitBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
-class ActiviteitListItemAdapter : ListAdapter<Activiteit, ActiviteitListItemAdapter.ActiviteitViewHolder>(ActiviteitDiffCallback()){
-
-    class ActiviteitViewHolder(
-        private val binding: ListItemActiviteitBinding
-    ): RecyclerView.ViewHolder(binding.root) {
-        init {
-            //binding.setClickListener TODO
-        }
-
-        fun bind(item: Activiteit) {
-            binding.apply {
-                activiteit = item
-                executePendingBindings()
-            }
-        }
-    }
+class ActiviteitListItemAdapter(val uitstelClickListener: UitstelClickListener, val afgewerktClickListener: AfgewerktClickListener, val detailClickListener: DetailClickListener) :
+    ListAdapter<ActiviteitEnDagGegevensDag, RecyclerView.ViewHolder>(ActiviteitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiviteitViewHolder {
-        return ActiviteitViewHolder(
+        val viewHolder = ActiviteitViewHolder(
+
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
                 R.layout.list_item_activiteit,
@@ -36,19 +27,86 @@ class ActiviteitListItemAdapter : ListAdapter<Activiteit, ActiviteitListItemAdap
                 false
             )
         )
+        return viewHolder
     }
 
-    override fun onBindViewHolder(holder: ActiviteitViewHolder, position: Int) {
-        holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as ActiviteitViewHolder).bind(getItem(position))
+        holder.setUitstelListener {
+            uitstelClickListener.onClick(getItem(position))
+        }
+        holder.setAfgewerktListener {
+            afgewerktClickListener.onClick(getItem(position))
+        }
+        holder.setDetailListener {
+            detailClickListener.onClick(getItem(position))
+        }
     }
+
+    class AfgewerktClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
+        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    }
+
+    class UitstelClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
+        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    }
+
+    class DetailClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
+        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    }
+
+    class ActiviteitViewHolder(
+        private val binding: ListItemActiviteitBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.isExpanded = false
+            binding.setExpandClickListener {
+                binding.apply {
+                    isExpanded = isExpanded?.not()
+                }
+            }
+        }
+
+        fun setUitstelListener(listener: () -> Unit) {
+            binding.setUitstellenClickListener {
+                listener()
+            }
+        }
+
+        fun setAfgewerktListener(listener: () -> Unit) {
+            binding.setAfgewerktClickListener {
+                listener()
+            }
+        }
+
+        fun setDetailListener(listener: () -> Unit) {
+            binding.setAanpassenClickListener {
+                listener()
+            }
+        }
+
+        fun bind(item: ActiviteitEnDagGegevensDag) {
+            binding.apply {
+                data = item
+                executePendingBindings()
+            }
+        }
+    }
+
 }
 
-private class ActiviteitDiffCallback : DiffUtil.ItemCallback<Activiteit>(){
-    override fun areItemsTheSame(oldItem: Activiteit, newItem: Activiteit): Boolean {
-        return oldItem.id == newItem.id
+private class ActiviteitDiffCallback : DiffUtil.ItemCallback<ActiviteitEnDagGegevensDag>() {
+    override fun areItemsTheSame(
+        oldItem: ActiviteitEnDagGegevensDag,
+        newItem: ActiviteitEnDagGegevensDag
+    ): Boolean {
+        return oldItem.activiteit.activiteitId == newItem.activiteit.activiteitId && oldItem.dagGegevens.gegevensId == newItem.dagGegevens.gegevensId
     }
 
-    override fun areContentsTheSame(oldItem: Activiteit, newItem: Activiteit): Boolean {
+    override fun areContentsTheSame(
+        oldItem: ActiviteitEnDagGegevensDag,
+        newItem: ActiviteitEnDagGegevensDag
+    ): Boolean {
         return oldItem == newItem
     }
 }
