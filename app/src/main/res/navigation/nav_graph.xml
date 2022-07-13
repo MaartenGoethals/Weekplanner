@@ -14,9 +14,20 @@
         <action
             android:id="@+id/action_FirstFragment_to_nieuweActiviteitFragment"
             app:destination="@id/nieuweActiviteitFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_activiteitDetailFragment"
+            app:destination="@id/activiteitDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/nieuweActiviteitFragment"
         android:name="be.dekade.weekplanner.NieuweActiviteitFragment"
-        android:label="NieuweActiviteitFragment" />
+        android:label="@string/nieuwe_activiteit_label" />
+    <fragment
+        android:id="@+id/activiteitDetailFragment"
+        android:name="be.dekade.weekplanner.ActiviteitDetailFragment"
+        android:label="@string/activiteit_detail_label">
+        <argument
+            android:name="activiteitId"
+            app:argType="long"/>
+    </fragment>
 </navigation>

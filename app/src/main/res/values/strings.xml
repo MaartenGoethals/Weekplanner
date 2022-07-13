@@ -34,4 +34,7 @@
     <string name="bewaren">Bewaren</string>
     <string name="activiteit_aanpassen">Aanpassen</string>
     <string name="uitstellen">Uitstellen</string>
+    <string name="verwijderen">Verwijderen</string>
+    <string name="activiteit_detail_label">Activiteit Bewerken</string>
+    <string name="nieuwe_activiteit_label">Nieuwe activiteit</string>
 </resources>

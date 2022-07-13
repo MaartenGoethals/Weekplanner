@@ -1,49 +1,47 @@
 package be.dekade.weekplanner
 
-import android.app.*
-import android.content.Context
-import android.content.Context.ALARM_SERVICE
-import android.content.Context.NOTIFICATION_SERVICE
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognizerIntent
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import be.dekade.weekplanner.databinding.FragmentNieuweActiviteitBinding
-import be.dekade.weekplanner.helpers.CHANNELID
-import be.dekade.weekplanner.helpers.NOTIFICATIONID
-import be.dekade.weekplanner.helpers.messageExtra
-import be.dekade.weekplanner.helpers.titleExtra
+import androidx.navigation.fragment.navArgs
+import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
+import be.dekade.weekplanner.databinding.FragmentDetailActiviteitBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class NieuweActiviteitFragment : Fragment() {
+class ActiviteitDetailFragment : Fragment() {
+
     private val SPEECH_REQUEST_TITEL_CODE = 0
     private val SPEECH_REQUEST_NOTITIES_CODE = 1
 
-    private val viewModel: NieuweActiviteitViewModel by viewModels()
+
+    private val args: ActiviteitDetailFragmentArgs by navArgs()
+    private val viewModel : ActiviteitDetailViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentNieuweActiviteitBinding.inflate(inflater, container, false)
+        val binding = FragmentDetailActiviteitBinding.inflate(inflater, container, false)
         context?: return binding.root
 
-        binding.viewModel=viewModel
+        binding.viewModel = viewModel
+
 
         viewModel.eventActiviteitSubmitted.observe(viewLifecycleOwner, { isSubmitted ->
             if(isSubmitted){
                 viewModel.onSubmitComplete()
-                scheduleNotification()
                 findNavController().popBackStack()
             }
         })
@@ -73,62 +71,10 @@ class NieuweActiviteitFragment : Fragment() {
                 viewModel.onVoiceInputComplete()
             }
         })
-        createNotificationChannel()
+
         setHasOptionsMenu(true)
         return binding.root
-    }
-
-    private fun scheduleNotification() {
-        val intent = Intent(context, Notification::class.java)
-        val title = "TestTitel"
-        val message = "TestMessage"
-        intent.putExtra(titleExtra, title)
-        intent.putExtra(messageExtra, message)
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATIONID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val time = getTime()
-        val alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            time,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-        showAlert(time, title, message)
-    }
-
-    private fun showAlert(time: Long, title: String, message: String) {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(context)
-        val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
-
-        AlertDialog.Builder(context)
-            .setTitle("Notification scheduled")
-            .setMessage(
-                "Title: " + title +
-                "\nMessage: " + message +
-                "\nAt: "+ dateFormat.format(date) + " " + timeFormat.format(date))
-            .setPositiveButton("Okay"){_,_ ->}
-            .show()
-    }
-
-    private fun getTime() : Long{
-        return System.currentTimeMillis() +1000
-    }
-
-    private fun createNotificationChannel() {
-        val name = "Notification Channel"
-        val desc = "Channel description"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNELID, name, importance)
-        channel.description = desc
-        val notificationManager = context?.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

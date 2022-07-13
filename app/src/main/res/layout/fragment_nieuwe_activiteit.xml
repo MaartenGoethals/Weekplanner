@@ -34,9 +34,21 @@
             android:layout_height="wrap_content"
             android:hint="@string/titel_hint"
             android:text="@={viewModel.activiteit.titel}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/titel_voice_icon"
             app:layout_constraintStart_toEndOf="@id/titel_label"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/titel_voice_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/titel_text"
+            app:layout_constraintTop_toTopOf="@id/titel_text"
+            app:layout_constraintBottom_toBottomOf="@id/titel_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_btn_speak_now"
+            android:onClick="@{() -> viewModel.startVoiceInputTitel()}" />
 
         <TextView
             android:id="@+id/notities_label"
@@ -53,10 +65,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="@string/vul_hier_bijkomende_informatie_in"
+            android:inputType="textMultiLine"
             android:text="@={viewModel.activiteit.notities}"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/notities_voice_icon"
             app:layout_constraintStart_toEndOf="@id/notities_label"
             app:layout_constraintTop_toBottomOf="@id/titel_text" />
+
+        <ImageView
+            android:id="@+id/notities_voice_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@id/notities_text"
+            app:layout_constraintTop_toTopOf="@id/notities_text"
+            app:layout_constraintBottom_toBottomOf="@id/notities_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@android:drawable/ic_btn_speak_now"
+            android:onClick="@{() -> viewModel.startVoiceInputNotities()}" />
 
         <TextView
             android:id="@+id/startuur_label"
@@ -183,6 +207,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bewaren"
+            android:drawableLeft="@android:drawable/ic_menu_save"
             android:onClick="@{() ->viewModel.submitActiviteit()}"/>
 
 

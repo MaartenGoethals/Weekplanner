@@ -11,6 +11,8 @@ class ActiviteitEnDagGegevensRepository @Inject constructor(private val activite
         return result
     }
 
+    fun getActiviteitEnDaggegevens(id: Long) = activiteitenDagGegevensDao.getActiviteitEnDagGagevensWeek(id)
+
     fun postActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.insertActiviteit(activiteit)
 
     fun postDagGegevens(dagGegevens: List<DagGegevens>) = activiteitenDagGegevensDao.insertDagGegevensWeek(dagGegevens)

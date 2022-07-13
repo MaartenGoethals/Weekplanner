@@ -13,10 +13,12 @@ import be.dekade.weekplanner.adapters.WeekdagPagerAdapter
 import be.dekade.weekplanner.databinding.FragmentWeekoverzichtBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
+@AndroidEntryPoint
 class WeekoverzichtFragment : Fragment() {
     //bindingproperties
     private var _binding: FragmentWeekoverzichtBinding? = null
@@ -68,7 +70,7 @@ class WeekoverzichtFragment : Fragment() {
     }
 
     private fun navigateToNieuweActiviteitFragment(){
-
-        findNavController().navigate(R.id.nieuweActiviteitFragment)
+        val directions = WeekoverzichtFragmentDirections.actionFirstFragmentToNieuweActiviteitFragment()
+        findNavController().navigate(directions)
     }
 }

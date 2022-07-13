@@ -6,11 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TimePicker
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import be.dekade.weekplanner.adapters.ARG_WEEKDAG
 import be.dekade.weekplanner.adapters.ActiviteitListItemAdapter
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
@@ -72,7 +70,8 @@ class DagoverzichtFragment : Fragment() {
     }
 
     fun navigateToDetails(gegevensDag: ActiviteitEnDagGegevensDag) {
-        //TODO
+        val directions = WeekoverzichtFragmentDirections.actionFirstFragmentToActiviteitDetailFragment(gegevensDag.activiteit.activiteitId)
+        findNavController().navigate(directions)
     }
 
     fun setUitstelUur(gegevensDag: ActiviteitEnDagGegevensDag) {
