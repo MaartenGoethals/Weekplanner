@@ -30,4 +30,7 @@ interface ActiviteitenDagGegevensDao {
     @Transaction
     @Query("SELECT * FROM activiteiten JOIN dagGegevens ON activiteitId = activiteitReferenceId WHERE dag = :dagVanDeWeek AND isActief = 1" )
     fun getActiviteitenEnDagGegevens(dagVanDeWeek: Int) : LiveData<List<ActiviteitEnDagGegevensDag>>
+
+    @Delete
+    fun deleteActiviteit(activiteit: Activiteit)
 }

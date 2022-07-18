@@ -1,23 +1,22 @@
 package be.dekade.weekplanner
 
-import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import be.dekade.weekplanner.data.Activiteit
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
+import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
 import be.dekade.weekplanner.data.DagGegevens
-import dagger.hilt.android.lifecycle.HiltViewModel
+import be.dekade.weekplanner.helpers.NotificationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
-@HiltViewModel
 class NieuweActiviteitViewModel @Inject internal constructor(
-    val activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository
-): ViewModel() {
+    val activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository,
+    application: Application
+): AndroidViewModel(application) {
     private val _eventActiviteitSubmitted = MutableLiveData<Boolean>()
     val eventActiviteitSubmitted: LiveData<Boolean>
         get() = _eventActiviteitSubmitted
@@ -76,16 +75,18 @@ class NieuweActiviteitViewModel @Inject internal constructor(
 
     private suspend fun insert(activiteit: Activiteit){
         withContext(Dispatchers.IO){
-            var activiteitId = activiteitEnDagGegevensRepository.postActiviteit(activiteit)
-            var dagGegevens = listOf<DagGegevens>(
-                DagGegevens(0,activiteitId, 0, isMaandag, -1,-1,false),
-                DagGegevens(0,activiteitId, 1, isDinsdag, -1,-1,false),
-                DagGegevens(0,activiteitId, 2, isWoensdag, -1,-1,false),
-                DagGegevens(0,activiteitId, 3, isDonderdag, -1,-1,false),
-                DagGegevens(0,activiteitId, 4, isVrijdag, -1,-1,false),
-                DagGegevens(0,activiteitId, 5, isZaterdag, -1,-1,false),
-                DagGegevens(0,activiteitId, 6, isZondag, -1,-1,false)
+            val activiteitId = activiteitEnDagGegevensRepository.postActiviteit(activiteit)
+            val dagGegevens = listOf<DagGegevens>(
+                DagGegevens(0,activiteitId, Calendar.MONDAY, isMaandag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.TUESDAY, isDinsdag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.WEDNESDAY, isWoensdag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.THURSDAY, isDonderdag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.FRIDAY, isVrijdag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.SATURDAY, isZaterdag, -1,-1,false),
+                DagGegevens(0,activiteitId, Calendar.SUNDAY, isZondag, -1,-1,false)
             )
+            val activiteitEnDagGegevens = ActiviteitEnDagGegevensWeek(activiteit, dagGegevens)
+            NotificationHelper.setNotifications(activiteitEnDagGegevens, getApplication())
             activiteitEnDagGegevensRepository.postDagGegevens(dagGegevens)
         }
     }

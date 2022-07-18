@@ -21,4 +21,6 @@ class ActiviteitEnDagGegevensRepository @Inject constructor(private val activite
 
     fun updateDagGegevens(vararg gegevens : DagGegevens) = activiteitenDagGegevensDao.updateDagGegevens(
         *gegevens)
+
+    fun deleteActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.deleteActiviteit(activiteit)
 }

@@ -24,7 +24,6 @@ class ActiviteitDetailFragment : Fragment() {
     private val SPEECH_REQUEST_TITEL_CODE = 0
     private val SPEECH_REQUEST_NOTITIES_CODE = 1
 
-
     private val args: ActiviteitDetailFragmentArgs by navArgs()
     private val viewModel : ActiviteitDetailViewModel by viewModels()
 
@@ -36,6 +35,7 @@ class ActiviteitDetailFragment : Fragment() {
         val binding = FragmentDetailActiviteitBinding.inflate(inflater, container, false)
         context?: return binding.root
 
+        
         binding.viewModel = viewModel
 
 
@@ -69,6 +69,12 @@ class ActiviteitDetailFragment : Fragment() {
                 // This starts the activity and populates the intent with the speech text.
                 startActivityForResult(intent, SPEECH_REQUEST_NOTITIES_CODE)
                 viewModel.onVoiceInputComplete()
+            }
+        })
+        viewModel.eventActiviteitDeleted.observe(viewLifecycleOwner, {isDeleted ->
+            if(isDeleted){
+                viewModel.onDeleteComplete()
+                findNavController().popBackStack()
             }
         })
 

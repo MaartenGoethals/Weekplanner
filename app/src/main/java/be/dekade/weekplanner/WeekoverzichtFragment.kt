@@ -14,6 +14,7 @@ import be.dekade.weekplanner.databinding.FragmentWeekoverzichtBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -48,14 +49,14 @@ class WeekoverzichtFragment : Fragment() {
         viewPager.adapter = weekdagPagerAdapter
         val tabLayout = binding.tabLayout
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            when(position){
-                0 -> tab.text = getString(R.string.maandag)
-                1 -> tab.text = getString(R.string.dinsdag)
-                2 -> tab.text = getString(R.string.woensdag)
-                3 -> tab.text = getString(R.string.donderdag)
-                4 -> tab.text = getString(R.string.vrijdag)
-                5 -> tab.text = getString(R.string.zaterdag)
-                6 -> tab.text = getString(R.string.zondag)
+            when(position + 2){ //position +2 makes Monday the first Tab
+                Calendar.MONDAY -> tab.text = getString(R.string.maandag)
+                Calendar.TUESDAY -> tab.text = getString(R.string.dinsdag)
+                Calendar.WEDNESDAY -> tab.text = getString(R.string.woensdag)
+                Calendar.THURSDAY -> tab.text = getString(R.string.donderdag)
+                Calendar.FRIDAY -> tab.text = getString(R.string.vrijdag)
+                Calendar.SATURDAY -> tab.text = getString(R.string.zaterdag)
+                (Calendar.SUNDAY +7 ) -> tab.text = getString(R.string.zondag)
             }
         }.attach()
 

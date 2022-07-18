@@ -3,20 +3,27 @@ package be.dekade.weekplanner
 import androidx.lifecycle.*
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.squareup.inject.assisted.Assisted
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
+import java.util.*
+import com.squareup.inject.assisted.AssistedInject
 
-@HiltViewModel
-class ActiviteitDetailViewModel @Inject internal constructor(
-    val activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository
+const val ACTIVITEITID_ARG = "ACTIVITEITID"
+
+class ActiviteitDetailViewModel @AssistedInject constructor(
+    val repository: ActiviteitEnDagGegevensRepository,
+    val state: SavedStateHandle
 ): ViewModel() {
-
+    val activiteitId = state.get<Long>("")
     private var _eventActiviteitSubmitted = MutableLiveData<Boolean>()
     val eventActiviteitSubmitted: LiveData<Boolean>
         get() = _eventActiviteitSubmitted
+
+    private var _eventActiviteitDeleted = MutableLiveData<Boolean>()
+    val eventActiviteitDeleted: LiveData<Boolean>
+        get() = _eventActiviteitDeleted
 
     private val _eventTitelVoiceInput = MutableLiveData<Boolean>()
     val eventTitelVoiceInput: LiveData<Boolean>
@@ -43,26 +50,26 @@ class ActiviteitDetailViewModel @Inject internal constructor(
     var isZondag = false
 
     init {
-        //TODO: replace with given activiteitId
-        activiteit = activiteitEnDagGegevensRepository.getActiviteitEnDaggegevens(1)
+        activiteit = activiteitId?.let { repository.getActiviteitEnDaggegevens(it) }!!
         _eventActiviteitSubmitted.value = false
+        _eventActiviteitDeleted.value = false
         _eventNotitiesVoiceInput.value = false
         _eventTitelVoiceInput.value = false
         _foutmelding.value = ""
         isMaandag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 0 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.MONDAY }?.isActief == true
         isDinsdag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 1 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.TUESDAY }?.isActief == true
         isWoensdag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 2 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.WEDNESDAY }?.isActief == true
         isDonderdag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 3 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.THURSDAY }?.isActief == true
         isVrijdag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 4 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.FRIDAY }?.isActief == true
         isZaterdag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 5 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.SATURDAY }?.isActief == true
         isZondag =
-            activiteit.value?.dagGegevens?.find { element -> element.dag == 6 }?.isActief == true
+            activiteit.value?.dagGegevens?.find { element -> element.dag == Calendar.SUNDAY }?.isActief == true
     }
 
     fun submitActiviteit() {
@@ -78,6 +85,11 @@ class ActiviteitDetailViewModel @Inject internal constructor(
         }
     }
 
+    fun deleteActiviteit(){
+        activiteit.value?.activiteit?.let { repository.deleteActiviteit(it) }
+        _eventActiviteitDeleted.value = true
+    }
+
     fun startVoiceInputTitel() {
         _eventTitelVoiceInput.value = true
     }
@@ -88,6 +100,10 @@ class ActiviteitDetailViewModel @Inject internal constructor(
 
     fun onSubmitComplete() {
         _eventActiviteitSubmitted.value = false
+    }
+
+    fun onDeleteComplete() {
+        _eventActiviteitDeleted.value = false
     }
 
     fun onFoutmeldingHandled() {
@@ -101,14 +117,14 @@ class ActiviteitDetailViewModel @Inject internal constructor(
 
     private suspend fun updateDtb(gegevens: ActiviteitEnDagGegevensWeek) {
         withContext(Dispatchers.IO) {
-            activiteitEnDagGegevensRepository.updateActiviteit(gegevens.activiteit)
-            (gegevens.dagGegevens.find { element -> element.dag == 0 })?.isActief = isMaandag
-            (gegevens.dagGegevens.find { element -> element.dag == 1 })?.isActief = isDinsdag
-            (gegevens.dagGegevens.find { element -> element.dag == 2 })?.isActief = isWoensdag
-            (gegevens.dagGegevens.find { element -> element.dag == 3 })?.isActief = isDonderdag
-            (gegevens.dagGegevens.find { element -> element.dag == 4 })?.isActief = isVrijdag
-            (gegevens.dagGegevens.find { element -> element.dag == 5 })?.isActief = isZaterdag
-            (gegevens.dagGegevens.find { element -> element.dag == 6 })?.isActief = isZondag
+            repository.updateActiviteit(gegevens.activiteit)
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.MONDAY })?.isActief = isMaandag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.TUESDAY })?.isActief = isDinsdag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.WEDNESDAY })?.isActief = isWoensdag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.THURSDAY })?.isActief = isDonderdag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.FRIDAY })?.isActief = isVrijdag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.SATURDAY })?.isActief = isZaterdag
+            (gegevens.dagGegevens.find { element -> element.dag == Calendar.SUNDAY })?.isActief = isZondag
             //repository.updateDagGegevens(*(gegevens?.dagGegevens?.toTypedArray()))
         }
     }
