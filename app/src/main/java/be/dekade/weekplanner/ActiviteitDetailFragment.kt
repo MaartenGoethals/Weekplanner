@@ -24,7 +24,6 @@ class ActiviteitDetailFragment : Fragment() {
     private val SPEECH_REQUEST_TITEL_CODE = 0
     private val SPEECH_REQUEST_NOTITIES_CODE = 1
 
-    private val args: ActiviteitDetailFragmentArgs by navArgs()
     private val viewModel : ActiviteitDetailViewModel by viewModels()
 
     override fun onCreateView(
@@ -34,11 +33,13 @@ class ActiviteitDetailFragment : Fragment() {
     ): View? {
         val binding = FragmentDetailActiviteitBinding.inflate(inflater, container, false)
         context?: return binding.root
-
-        
         binding.viewModel = viewModel
-
-
+        binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.activiteit.observe(viewLifecycleOwner, {a ->
+            if (a != null) {
+                    viewModel.activiteitChanged()
+                }
+        })
         viewModel.eventActiviteitSubmitted.observe(viewLifecycleOwner, { isSubmitted ->
             if(isSubmitted){
                 viewModel.onSubmitComplete()
@@ -80,7 +81,6 @@ class ActiviteitDetailFragment : Fragment() {
 
         setHasOptionsMenu(true)
         return binding.root
-        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

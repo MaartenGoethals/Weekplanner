@@ -18,18 +18,25 @@ interface ActiviteitenDagGegevensDao {
     fun insertDagGegevensWeek(dagGegevensWeek: List<DagGegevens>)
 
     @Update
-    fun updateActiviteit(vararg activiteit: Activiteit)
+    fun updateActiviteit(activiteit: Activiteit)
 
     @Update
-    fun updateDagGegevens(vararg dagGegevens: DagGegevens)
+    fun updateDagGegevens(dagGegevens: List<DagGegevens>)
+
+    @Update
+    fun updateDagGegevens(dagGegevens: DagGegevens)
 
     @Transaction
     @Query("SELECT * FROM activiteiten WHERE activiteitId = :id")
-    fun getActiviteitEnDagGagevensWeek(id: Long): LiveData<ActiviteitEnDagGegevensWeek>
+    fun getActiviteitEnDagGegevensWeek(id: Long): LiveData<ActiviteitEnDagGegevensWeek>
 
     @Transaction
     @Query("SELECT * FROM activiteiten JOIN dagGegevens ON activiteitId = activiteitReferenceId WHERE dag = :dagVanDeWeek AND isActief = 1" )
     fun getActiviteitenEnDagGegevens(dagVanDeWeek: Int) : LiveData<List<ActiviteitEnDagGegevensDag>>
+
+    @Transaction
+    @Query("SELECT * FROM activiteiten JOIN dagGegevens ON activiteitId = activiteitReferenceId WHERE isNotificatieAan = 1 AND isActief = 1" )
+    suspend fun getAlarms() : List<ActiviteitEnDagGegevensDag>
 
     @Delete
     fun deleteActiviteit(activiteit: Activiteit)

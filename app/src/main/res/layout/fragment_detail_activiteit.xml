@@ -116,7 +116,7 @@
                 android:id="@+id/maandag_checkbox"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:checked="@={viewModel.maandag}"
+                android:checked="@={viewModel.isMaandag}"
                 android:text="@string/maandag"
                 android:textSize="@dimen/font_size"
                 app:layout_constraintEnd_toEndOf="parent"

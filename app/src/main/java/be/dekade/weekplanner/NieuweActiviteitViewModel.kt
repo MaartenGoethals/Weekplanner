@@ -7,12 +7,13 @@ import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
 import be.dekade.weekplanner.data.DagGegevens
 import be.dekade.weekplanner.helpers.NotificationHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
-
+@HiltViewModel
 class NieuweActiviteitViewModel @Inject internal constructor(
     val activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository,
     application: Application

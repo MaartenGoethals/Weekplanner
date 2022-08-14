@@ -3,8 +3,10 @@ package be.dekade.weekplanner
 import androidx.lifecycle.*
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class DagOverzichtViewModel @Inject internal constructor(
     activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository,
     private val savedStateHandle: SavedStateHandle
