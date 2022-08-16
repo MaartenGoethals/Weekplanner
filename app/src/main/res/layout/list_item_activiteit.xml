@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="data"
-            type="be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag" />
+            type="be.dekade.weekplanner.data.DagGegevensData" />
         <variable
             name="isExpanded"
             type="Boolean" />
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/uur"
-            android:checked="@={data.dagGegevens.afgewerkt}"
+            android:checked="@={data.afgewerkt}"
             android:onClick="@{afgewerktClickListener}"/>
         <TextView
             android:id="@+id/title"
@@ -56,7 +56,7 @@
             app:layout_constraintStart_toEndOf="@id/afgewerkt_checkbox"
             app:layout_constraintTop_toBottomOf="@id/title"
             android:textSize="@dimen/font_size"
-            android:text="@{data.dagGegevens.uitstelUur > 0 ? @string/uur_format(data.dagGegevens.uitstelUur, data.dagGegevens.uitstelMinuut) : @string/uur_format(data.activiteit.startuur, data.activiteit.startminuut)}"
+            android:text="@{data.uitstelUur > 0 ? @string/uur_format(data.uitstelUur, data.uitstelMinuut) : @string/uur_format(data.activiteit.startuur, data.activiteit.startminuut)}"
             tools:text="8:00"/>
         <TextView
             android:id="@+id/notities_text"

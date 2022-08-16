@@ -7,13 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import be.dekade.weekplanner.adapters.ARG_WEEKDAG
 import be.dekade.weekplanner.adapters.ActiviteitListItemAdapter
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
+import be.dekade.weekplanner.data.DagGegevensData
 import be.dekade.weekplanner.databinding.FragmentDagoverzichtBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -35,6 +34,11 @@ class DagoverzichtFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: DagOverzichtViewModel by viewModels()
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.reload()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,27 +74,43 @@ class DagoverzichtFragment : Fragment() {
         }
     }
 
-    fun navigateToDetails(gegevensDag: ActiviteitEnDagGegevensDag) {
-        val directions = WeekoverzichtFragmentDirections.actionFirstFragmentToActiviteitDetailFragment(gegevensDag.activiteit.activiteitId)
-        findNavController().navigate(directions)
+    fun navigateToDetails(gegevensDag: DagGegevensData) {
+        val activiteitId = gegevensDag.activiteit?.activiteitId
+        val directions = activiteitId?.let {
+            WeekoverzichtFragmentDirections.actionFirstFragmentToActiviteitDetailFragment(
+                it
+            )
+        }
+        if (directions != null) {
+            findNavController().navigate(directions)
+        }
     }
 
-    fun setUitstelUur(gegevensDag: ActiviteitEnDagGegevensDag) {
-        val tsl = TimePickerDialog.OnTimeSetListener{ tp, hour, minute ->
-            gegevensDag.dagGegevens.uitstelUur = hour
-            gegevensDag.dagGegevens.uitstelMinuut = minute
+    fun setUitstelUur(gegevensDag: DagGegevensData) {
+        val tsl = TimePickerDialog.OnTimeSetListener { tp, hour, minute ->
+            gegevensDag.uitstelUur = hour
+            gegevensDag.uitstelMinuut = minute
             lifecycleScope.launch {
                 updateDagGegevens(gegevensDag)
                 binding.activiteitenlijst.adapter?.notifyDataSetChanged()
             }
         }
-        val newFragment = TimePickerDialog(this.context, tsl, gegevensDag.activiteit.startuur, gegevensDag.activiteit.startminuut, true)
-        newFragment.show()
+        val newFragment = gegevensDag.activiteit?.startuur?.let {
+            gegevensDag.activiteit?.startminuut?.let { it1 ->
+                TimePickerDialog(
+                    this.context, tsl,
+                    it, it1, true
+                )
+            }
+        }
+        if (newFragment != null) {
+            newFragment.show()
+        }
     }
 
-    suspend fun updateDagGegevens(gegevensDag: ActiviteitEnDagGegevensDag) =
+    suspend fun updateDagGegevens(gegevensDag: DagGegevensData) =
         withContext(Dispatchers.IO) {
-            repository.updateDagGegevens(gegevensDag.dagGegevens)
+            repository.updateDagGegevens(gegevensDag)
         }
 
     override fun onDestroyView() {

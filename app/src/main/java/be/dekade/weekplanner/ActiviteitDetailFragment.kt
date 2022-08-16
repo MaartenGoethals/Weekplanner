@@ -12,11 +12,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
 import be.dekade.weekplanner.databinding.FragmentDetailActiviteitBinding
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ActiviteitDetailFragment : Fragment() {

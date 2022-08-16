@@ -1,16 +1,20 @@
 package be.dekade.weekplanner.data
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import io.realm.RealmList
+import io.realm.RealmObject
+import io.realm.RealmResults
+import io.realm.annotations.PrimaryKey
+import io.realm.annotations.RealmField
+import org.bson.types.ObjectId
 
-@Entity(tableName = "activiteiten")
-data class Activiteit(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "activiteitId")
-    var activiteitId: Long = 0L,
-    var titel: String,
-    var notities: String,
-    var startuur: Int,
-    var startminuut: Int,
-    var isNotificatieAan: Boolean
-)
+open class Activiteit(
+    @PrimaryKey @RealmField("activiteitId")
+    var activiteitId: String = ObjectId().toHexString(),
+    var dagGegevens: RealmList<DagGegevens> = RealmList(),
+    var titel: String = "",
+    var notities: String = "",
+    var startuur: Int = 8,
+    var startminuut: Int = 0,
+    var isNotificatieAan: Boolean = true
+) : RealmObject(){
+}

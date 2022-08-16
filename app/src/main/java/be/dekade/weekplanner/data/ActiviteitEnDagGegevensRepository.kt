@@ -6,25 +6,25 @@ import javax.inject.Singleton
 
 @Singleton
 class ActiviteitEnDagGegevensRepository @Inject constructor(private val activiteitenDagGegevensDao: ActiviteitenDagGegevensDao) {
-    fun getActiviteitenVoorDag(weekdag: Int): LiveData<List<ActiviteitEnDagGegevensDag>> {
+    fun getActiviteitenVoorDag(weekdag: Int): List<DagGegevensData> {
         val result = activiteitenDagGegevensDao.getActiviteitenEnDagGegevens(weekdag)
         return result
     }
 
-    fun getActiviteitEnDaggegevens(id: Long) = activiteitenDagGegevensDao.getActiviteitEnDagGegevensWeek(id)
+    fun getActiviteitEnDaggegevens(id: String) = activiteitenDagGegevensDao.getActiviteitEnDagGegevensWeek(id)
 
-    fun postActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.insertActiviteit(activiteit)
+    suspend fun postActiviteit(activiteit: ActiviteitData) = activiteitenDagGegevensDao.insertActiviteit(activiteit)
 
-    fun postDagGegevens(dagGegevens: List<DagGegevens>) = activiteitenDagGegevensDao.insertDagGegevensWeek(dagGegevens)
+    //suspend fun postDagGegevens(dagGegevens: List<DagGegevensData>) = activiteitenDagGegevensDao.insertDagGegevensWeek(dagGegevens)
 
-    fun updateActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.updateActiviteit(activiteit)
+    suspend fun updateActiviteit(activiteit: ActiviteitData) = activiteitenDagGegevensDao.updateActiviteit(activiteit)
 
-    fun updateDagGegevens(gegevens : List<DagGegevens>) = activiteitenDagGegevensDao.updateDagGegevens(
+    suspend fun updateDagGegevens(gegevens : List<DagGegevensData>) = activiteitenDagGegevensDao.updateDagGegevens(
         gegevens)
 
-    fun updateDagGegevens(gegevens: DagGegevens) = activiteitenDagGegevensDao.updateDagGegevens(gegevens)
+    suspend fun updateDagGegevens(gegevens: DagGegevensData) = activiteitenDagGegevensDao.updateDagGegevens(gegevens)
 
-    fun deleteActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.deleteActiviteit(activiteit)
+    suspend fun deleteActiviteit(activiteit: ActiviteitData) = activiteitenDagGegevensDao.deleteActiviteit(activiteit)
 
-    suspend fun getAlarms() = activiteitenDagGegevensDao.getAlarms()
+    fun getAlarms() = activiteitenDagGegevensDao.getAlarms()
 }

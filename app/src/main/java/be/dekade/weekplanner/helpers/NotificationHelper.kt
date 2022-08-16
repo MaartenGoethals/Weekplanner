@@ -3,19 +3,11 @@ package be.dekade.weekplanner.helpers
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.os.Build
-import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import be.dekade.weekplanner.R
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
-import be.dekade.weekplanner.data.DagGegevens
+import be.dekade.weekplanner.data.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.*
@@ -57,16 +49,16 @@ class NotificationHelper : BroadcastReceiver() {
     companion object {
         @JvmStatic
         fun setNotifications(
-            activiteitEnDagGegevensWeek: ActiviteitEnDagGegevensWeek,
+            activiteit: ActiviteitData,
             context: Context
         ) {
-            if (activiteitEnDagGegevensWeek.activiteit.isNotificatieAan) {
+            if (activiteit.isNotificatieAan) {
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                for (dagGegeven: DagGegevens in activiteitEnDagGegevensWeek.dagGegevens) {
+                for (dagGegeven: DagGegevensData in activiteit.dagGegevens) {
                     if (dagGegeven.isActief) {
                         val intent = Intent(context, AlarmReceiver::class.java)
-                        val title = activiteitEnDagGegevensWeek.activiteit.titel
-                        val message = activiteitEnDagGegevensWeek.activiteit.notities
+                        val title = activiteit.titel
+                        val message = activiteit.notities
                         intent.setAction(CHANNELID + dagGegeven.gegevensId.toString()) //alarms scheduled in this application have a unique intent action starting with the channelid
                         intent.putExtra(titleExtra, title)
                         intent.putExtra(messageExtra, message)
@@ -82,11 +74,11 @@ class NotificationHelper : BroadcastReceiver() {
                         time.set(Calendar.DAY_OF_WEEK, dagGegeven.dag)
                         time.set(
                             Calendar.HOUR_OF_DAY,
-                            activiteitEnDagGegevensWeek.activiteit.startuur
+                            activiteit.startuur
                         )
                         time.set(
                             Calendar.MINUTE,
-                            activiteitEnDagGegevensWeek.activiteit.startminuut
+                            activiteit.startminuut
                         )
                         time.set(
                             Calendar.SECOND,
@@ -112,16 +104,16 @@ class NotificationHelper : BroadcastReceiver() {
 
         @JvmStatic
         fun setNotification(
-            dagGegeven: ActiviteitEnDagGegevensDag,
+            dagGegeven: DagGegevensData,
             context: Context
         ) {
-            if (dagGegeven.activiteit.isNotificatieAan) {
+            if (dagGegeven.activiteit?.isNotificatieAan == true) {
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                if (dagGegeven.dagGegevens.isActief) {
+                if (dagGegeven.isActief) {
                     val intent = Intent(context, NotificationHelper::class.java)
                     val title = dagGegeven.activiteit.titel
                     val message = dagGegeven.activiteit.notities
-                    intent.setAction(CHANNELID + dagGegeven.dagGegevens.gegevensId.toString()) //alarms scheduled in this application have a unique intent action starting with the channelid
+                    intent.setAction(CHANNELID + dagGegeven.gegevensId.toString()) //alarms scheduled in this application have a unique intent action starting with the channelid
                     intent.putExtra(titleExtra, title)
                     intent.putExtra(messageExtra, message)
 
@@ -133,7 +125,7 @@ class NotificationHelper : BroadcastReceiver() {
                     )
                     val time = Calendar.getInstance()
                     time.timeInMillis = System.currentTimeMillis()
-                    time.set(Calendar.DAY_OF_WEEK, dagGegeven.dagGegevens.dag)
+                    time.set(Calendar.DAY_OF_WEEK, dagGegeven.dag)
                     time.set(
                         Calendar.HOUR_OF_DAY,
                         dagGegeven.activiteit.startuur
@@ -165,11 +157,11 @@ class NotificationHelper : BroadcastReceiver() {
         @JvmStatic
         fun turnNotificationsOff(
             context: Context,
-            activiteitEnDagGegevensWeek: ActiviteitEnDagGegevensWeek
+            activiteit: ActiviteitData
         ) {
             val intent = Intent(context, Notification::class.java)
-            val title = activiteitEnDagGegevensWeek.activiteit.titel
-            val message = activiteitEnDagGegevensWeek.activiteit.notities
+            val title = activiteit.titel
+            val message = activiteit.notities
             intent.putExtra(titleExtra, title)
             intent.putExtra(messageExtra, message)
 

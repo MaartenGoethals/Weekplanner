@@ -28,6 +28,6 @@
         android:label="@string/activiteit_detail_label">
         <argument
             android:name="activiteitId"
-            app:argType="long"/>
+            app:argType="string"/>
     </fragment>
 </navigation>

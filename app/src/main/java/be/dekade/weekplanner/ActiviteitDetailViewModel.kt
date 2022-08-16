@@ -2,11 +2,12 @@ package be.dekade.weekplanner
 
 import android.app.Application
 import androidx.lifecycle.*
+import be.dekade.weekplanner.data.ActiviteitData
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
 import be.dekade.weekplanner.helpers.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -35,7 +36,9 @@ class ActiviteitDetailViewModel @Inject internal constructor(
     val evenNotitiesVoiceInput: LiveData<Boolean>
         get() = _eventNotitiesVoiceInput
 
-    val activiteit: LiveData<ActiviteitEnDagGegevensWeek>
+    private val _activiteit = MutableLiveData<ActiviteitData>()
+    val activiteit: LiveData<ActiviteitData>
+        get() = _activiteit
 
     private var _foutmelding = MutableLiveData<String>()
     val foutmelding: LiveData<String>
@@ -57,8 +60,8 @@ class ActiviteitDetailViewModel @Inject internal constructor(
         isVrijdag = MutableLiveData<Boolean>()
         isZaterdag = MutableLiveData<Boolean>()
         isZondag = MutableLiveData<Boolean>()
-        val activiteitId = state.get<Long>("activiteitId")
-        activiteit = activiteitId?.let { repository.getActiviteitEnDaggegevens(it) }!!
+        val activiteitId = state.get<String>("activiteitId")
+        _activiteit.value = activiteitId?.let { repository.getActiviteitEnDaggegevens(it) }!!
         _eventActiviteitSubmitted.value = false
         _eventActiviteitDeleted.value = false
         _eventNotitiesVoiceInput.value = false
@@ -84,7 +87,7 @@ class ActiviteitDetailViewModel @Inject internal constructor(
     }
 
     fun submitActiviteit() {
-        if (activiteit.value?.activiteit?.titel.isNullOrEmpty()) {
+        if (activiteit.value?.titel.isNullOrEmpty()) {
             _foutmelding.value = "Vul de titel in."
         } else if (!(isZondag.value == true || isZaterdag.value ==true || isVrijdag.value ==true || isDonderdag.value ==true || isWoensdag.value ==true || isDinsdag.value ==true || isMaandag.value ==true)) {
             _foutmelding.value = "Vink minstens 1 dag aan"
@@ -97,8 +100,8 @@ class ActiviteitDetailViewModel @Inject internal constructor(
     }
 
     fun deleteActiviteit(){
-        viewModelScope.launch {
-            activiteit.value?.activiteit?.let { repository.deleteActiviteit(it) }
+        GlobalScope.launch {
+            activiteit.value?.let { repository.deleteActiviteit(it) }
         }
         _eventActiviteitDeleted.value = true
     }
@@ -128,7 +131,7 @@ class ActiviteitDetailViewModel @Inject internal constructor(
         _eventNotitiesVoiceInput.value = false
     }
 
-    private suspend fun updateDtb(gegevens: ActiviteitEnDagGegevensWeek) {
+    private suspend fun updateDtb(gegevens: ActiviteitData) {
         withContext(Dispatchers.IO) {
             (gegevens.dagGegevens.find { element -> element.dag == Calendar.MONDAY })?.isActief = isMaandag.value ==true
             (gegevens.dagGegevens.find { element -> element.dag == Calendar.TUESDAY })?.isActief = isDinsdag.value ==true
@@ -137,7 +140,7 @@ class ActiviteitDetailViewModel @Inject internal constructor(
             (gegevens.dagGegevens.find { element -> element.dag == Calendar.FRIDAY })?.isActief = isVrijdag.value ==true
             (gegevens.dagGegevens.find { element -> element.dag == Calendar.SATURDAY })?.isActief = isZaterdag.value ==true
             (gegevens.dagGegevens.find { element -> element.dag == Calendar.SUNDAY })?.isActief = isZondag.value ==true
-            repository.updateActiviteit(gegevens.activiteit)
+            repository.updateActiviteit(gegevens)
             repository.updateDagGegevens(gegevens.dagGegevens)
             NotificationHelper.setNotifications(gegevens, getApplication())
         }

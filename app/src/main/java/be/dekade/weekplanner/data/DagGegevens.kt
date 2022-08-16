@@ -1,27 +1,19 @@
 package be.dekade.weekplanner.data
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
+import io.realm.RealmObject
+import io.realm.RealmResults
+import io.realm.annotations.LinkingObjects
+import io.realm.annotations.PrimaryKey
+import org.bson.types.ObjectId
 
-@Entity(
-    tableName = "dagGegevens", foreignKeys = [
-        ForeignKey(
-            onDelete = CASCADE,
-            entity = Activiteit::class,
-            parentColumns = ["activiteitId"],
-            childColumns = ["activiteitReferenceId"]
-        )
-    ]
-)
-data class DagGegevens(
-    @PrimaryKey(autoGenerate = true)
-    var gegevensId: Long = 0L,
-    var activiteitReferenceId: Long,
-    var dag: Int,
-    var isActief: Boolean,
+open class DagGegevens(
+    @PrimaryKey
+    var gegevensId: String = ObjectId().toHexString(),
+    @LinkingObjects("dagGegevens")
+    val activiteit: RealmResults<Activiteit>? = null,
+    var dag: Int = 0,
+    var isActief: Boolean = true,
     var uitstelUur: Int = -1,
     var uitstelMinuut: Int = -1,
     var isAfgewerkt: Boolean = false
-)
+) : RealmObject()

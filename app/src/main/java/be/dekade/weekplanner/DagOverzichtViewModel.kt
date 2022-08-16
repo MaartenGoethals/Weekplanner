@@ -1,22 +1,20 @@
 package be.dekade.weekplanner
 
 import androidx.lifecycle.*
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
+import be.dekade.weekplanner.data.DagGegevensData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class DagOverzichtViewModel @Inject internal constructor(
-    activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository,
+    val activiteitEnDagGegevensRepository: ActiviteitEnDagGegevensRepository,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
-    var activiteiten : LiveData<List<ActiviteitEnDagGegevensDag>> = getWeekDag().switchMap{
-        if (it== DEFAULT_VALUE){
-            activiteitEnDagGegevensRepository.getActiviteitenVoorDag(0)
-        }else{
-            activiteitEnDagGegevensRepository.getActiviteitenVoorDag(it)
-        }
+    var activiteiten : LiveData<List<DagGegevensData>> = getWeekDag().switchMap {
+        val _list = MutableLiveData<List<DagGegevensData>>()
+        _list.value = activiteitEnDagGegevensRepository.getActiviteitenVoorDag(it)
+        return@switchMap _list
     }
 
     private fun getWeekDag(): MutableLiveData<Int>{
@@ -26,6 +24,14 @@ class DagOverzichtViewModel @Inject internal constructor(
     fun setWeekDag(dag: Int){
         savedStateHandle.set(WEEKDAG_KEY, dag)
 
+    }
+
+    fun reload(){
+        activiteiten = getWeekDag().switchMap {
+            val _list = MutableLiveData<List<DagGegevensData>>()
+            _list.value = activiteitEnDagGegevensRepository.getActiviteitenVoorDag(it)
+            return@switchMap _list
+        }
     }
 
     companion object{

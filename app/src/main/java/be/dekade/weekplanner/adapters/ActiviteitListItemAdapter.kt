@@ -7,15 +7,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import be.dekade.weekplanner.R
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
+import be.dekade.weekplanner.data.DagGegevensData
 import be.dekade.weekplanner.databinding.ListItemActiviteitBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class ActiviteitListItemAdapter(val uitstelClickListener: UitstelClickListener, val afgewerktClickListener: AfgewerktClickListener, val detailClickListener: DetailClickListener) :
-    ListAdapter<ActiviteitEnDagGegevensDag, RecyclerView.ViewHolder>(ActiviteitDiffCallback()) {
+    ListAdapter<DagGegevensData, RecyclerView.ViewHolder>(ActiviteitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActiviteitViewHolder {
         val viewHolder = ActiviteitViewHolder(
@@ -43,16 +39,16 @@ class ActiviteitListItemAdapter(val uitstelClickListener: UitstelClickListener, 
         }
     }
 
-    class AfgewerktClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
-        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    class AfgewerktClickListener(val clickListener: (gegevens: DagGegevensData) -> Unit){
+        fun onClick(gegevens: DagGegevensData) = clickListener(gegevens)
     }
 
-    class UitstelClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
-        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    class UitstelClickListener(val clickListener: (gegevens: DagGegevensData) -> Unit){
+        fun onClick(gegevens: DagGegevensData) = clickListener(gegevens)
     }
 
-    class DetailClickListener(val clickListener: (gegevens: ActiviteitEnDagGegevensDag) -> Unit){
-        fun onClick(gegevens: ActiviteitEnDagGegevensDag) = clickListener(gegevens)
+    class DetailClickListener(val clickListener: (gegevens: DagGegevensData) -> Unit){
+        fun onClick(gegevens: DagGegevensData) = clickListener(gegevens)
     }
 
     class ActiviteitViewHolder(
@@ -85,7 +81,7 @@ class ActiviteitListItemAdapter(val uitstelClickListener: UitstelClickListener, 
             }
         }
 
-        fun bind(item: ActiviteitEnDagGegevensDag) {
+        fun bind(item: DagGegevensData) {
             binding.apply {
                 data = item
                 executePendingBindings()
@@ -95,17 +91,17 @@ class ActiviteitListItemAdapter(val uitstelClickListener: UitstelClickListener, 
 
 }
 
-private class ActiviteitDiffCallback : DiffUtil.ItemCallback<ActiviteitEnDagGegevensDag>() {
+private class ActiviteitDiffCallback : DiffUtil.ItemCallback<DagGegevensData>() {
     override fun areItemsTheSame(
-        oldItem: ActiviteitEnDagGegevensDag,
-        newItem: ActiviteitEnDagGegevensDag
+        oldItem: DagGegevensData,
+        newItem: DagGegevensData
     ): Boolean {
-        return oldItem.activiteit.activiteitId == newItem.activiteit.activiteitId && oldItem.dagGegevens.gegevensId == newItem.dagGegevens.gegevensId
+        return oldItem.activiteit?.activiteitId == newItem.activiteit?.activiteitId && oldItem.gegevensId == newItem.gegevensId
     }
 
     override fun areContentsTheSame(
-        oldItem: ActiviteitEnDagGegevensDag,
-        newItem: ActiviteitEnDagGegevensDag
+        oldItem: DagGegevensData,
+        newItem: DagGegevensData
     ): Boolean {
         return oldItem == newItem
     }

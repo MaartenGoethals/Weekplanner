@@ -2,10 +2,7 @@ package be.dekade.weekplanner
 
 import android.app.Application
 import androidx.lifecycle.*
-import be.dekade.weekplanner.data.Activiteit
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
-import be.dekade.weekplanner.data.ActiviteitEnDagGegevensWeek
-import be.dekade.weekplanner.data.DagGegevens
+import be.dekade.weekplanner.data.*
 import be.dekade.weekplanner.helpers.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +29,7 @@ class NieuweActiviteitViewModel @Inject internal constructor(
     val evenNotitiesVoiceInput: LiveData<Boolean>
         get() = _eventNotitiesVoiceInput
 
-    val activiteit = MutableLiveData<Activiteit>()
+    val activiteit = MutableLiveData<ActiviteitData>()
 
     private var _foutmelding = MutableLiveData<String>()
     val foutmelding: LiveData<String>
@@ -47,7 +44,7 @@ class NieuweActiviteitViewModel @Inject internal constructor(
     var isZondag = false
 
     init {
-        activiteit.value = Activiteit(0,"", "", 8, 0, true)
+        activiteit.value = ActiviteitData(titel = "", notities =  "", startuur =  8, startminuut =  0, isNotificatieAan =  true)
         _eventActiviteitSubmitted.value = false
         _eventNotitiesVoiceInput.value = false
         _eventTitelVoiceInput.value = false
@@ -74,21 +71,20 @@ class NieuweActiviteitViewModel @Inject internal constructor(
         _eventNotitiesVoiceInput.value = true
     }
 
-    private suspend fun insert(activiteit: Activiteit){
+    private suspend fun insert(activiteit: ActiviteitData){
         withContext(Dispatchers.IO){
-            val activiteitId = activiteitEnDagGegevensRepository.postActiviteit(activiteit)
-            val dagGegevens = listOf<DagGegevens>(
-                DagGegevens(0,activiteitId, Calendar.MONDAY, isMaandag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.TUESDAY, isDinsdag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.WEDNESDAY, isWoensdag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.THURSDAY, isDonderdag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.FRIDAY, isVrijdag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.SATURDAY, isZaterdag, -1,-1,false),
-                DagGegevens(0,activiteitId, Calendar.SUNDAY, isZondag, -1,-1,false)
+            val dagGegevens = listOf<DagGegevensData>(
+                DagGegevensData(activiteit = activiteit, dag= Calendar.MONDAY, isActief =  isMaandag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.TUESDAY, isActief =  isDinsdag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.WEDNESDAY, isActief =  isWoensdag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.THURSDAY, isActief = isDonderdag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.FRIDAY, isActief = isVrijdag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.SATURDAY, isActief = isZaterdag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false),
+                DagGegevensData(activiteit = activiteit, dag= Calendar.SUNDAY, isActief = isZondag, uitstelUur =  -1, uitstelMinuut = -1, isAfgewerkt = false)
             )
-            val activiteitEnDagGegevens = ActiviteitEnDagGegevensWeek(activiteit, dagGegevens)
-            NotificationHelper.setNotifications(activiteitEnDagGegevens, getApplication())
-            activiteitEnDagGegevensRepository.postDagGegevens(dagGegevens)
+            activiteit.dagGegevens = dagGegevens
+            NotificationHelper.setNotifications(activiteit, getApplication())
+            activiteitEnDagGegevensRepository.postActiviteit(activiteit)
         }
     }
 
