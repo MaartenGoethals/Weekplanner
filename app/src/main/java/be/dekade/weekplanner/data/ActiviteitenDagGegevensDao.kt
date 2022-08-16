@@ -2,15 +2,12 @@ package be.dekade.weekplanner.data
 
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import io.realm.RealmModel
-import io.realm.RealmResults
 import io.realm.kotlin.executeTransactionAwait
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 
 class ActiviteitenDagGegevensDao @Inject constructor(private val configuration: RealmConfiguration) {
-    fun <T : RealmModel> RealmResults<T>.asLiveData() = LiveRealmResults<T>(this)
 
     suspend fun insertActiviteit(activiteitData: ActiviteitData) {
         val realmDTB = Realm.getInstance(configuration)
@@ -30,12 +27,6 @@ class ActiviteitenDagGegevensDao @Inject constructor(private val configuration: 
             realmTransaction.insertOrUpdate(activiteit)
         }
     }
-
-    /*suspend fun insertDagGegevensWeek(dagGegevensWeek: List<DagGegevens>) {
-        realmDTB.executeTransactionAwait(Dispatchers.IO) { realmTransaction ->
-            realmTransaction.insertOrUpdate(dagGegevensWeek)
-        }
-    }*/
 
     suspend fun updateActiviteit(activiteit: ActiviteitData) {
         val realmDTB = Realm.getInstance(configuration)
