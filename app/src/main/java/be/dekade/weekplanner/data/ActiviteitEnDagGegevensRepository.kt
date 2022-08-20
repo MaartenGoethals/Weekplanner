@@ -11,7 +11,7 @@ class ActiviteitEnDagGegevensRepository @Inject constructor(private val activite
         return result
     }
 
-    fun getActiviteitEnDaggegevens(id: Long) = activiteitenDagGegevensDao.getActiviteitEnDagGagevensWeek(id)
+    fun getActiviteitEnDaggegevens(id: Long) = activiteitenDagGegevensDao.getActiviteitEnDagGegevensWeek(id)
 
     fun postActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.insertActiviteit(activiteit)
 
@@ -19,6 +19,12 @@ class ActiviteitEnDagGegevensRepository @Inject constructor(private val activite
 
     fun updateActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.updateActiviteit(activiteit)
 
-    fun updateDagGegevens(vararg gegevens : DagGegevens) = activiteitenDagGegevensDao.updateDagGegevens(
-        *gegevens)
+    fun updateDagGegevens(gegevens : List<DagGegevens>) = activiteitenDagGegevensDao.updateDagGegevens(
+        gegevens)
+
+    fun updateDagGegevens(gegevens: DagGegevens) = activiteitenDagGegevensDao.updateDagGegevens(gegevens)
+
+    fun deleteActiviteit(activiteit: Activiteit) = activiteitenDagGegevensDao.deleteActiviteit(activiteit)
+
+    suspend fun getAlarms() = activiteitenDagGegevensDao.getAlarms()
 }

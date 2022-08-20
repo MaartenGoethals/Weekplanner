@@ -43,14 +43,15 @@ class NieuweActiviteitFragment : Fragment() {
         viewModel.eventActiviteitSubmitted.observe(viewLifecycleOwner, { isSubmitted ->
             if(isSubmitted){
                 viewModel.onSubmitComplete()
-                scheduleNotification()
                 findNavController().popBackStack()
             }
         })
         viewModel.foutmelding.observe(viewLifecycleOwner,{ foutmelding ->
             if(!foutmelding.isNullOrEmpty()){
+
+                scheduleNotification()
                 viewModel.onFoutmeldingHandled()
-                Toast.makeText(activity,foutmelding, Toast.LENGTH_LONG).show()
+                Toast.makeText(context,foutmelding, Toast.LENGTH_LONG).show()
             }
         })
         viewModel.eventTitelVoiceInput.observe(viewLifecycleOwner,{isGestart ->
@@ -73,62 +74,12 @@ class NieuweActiviteitFragment : Fragment() {
                 viewModel.onVoiceInputComplete()
             }
         })
-        createNotificationChannel()
         setHasOptionsMenu(true)
         return binding.root
     }
 
     private fun scheduleNotification() {
-        val intent = Intent(context, Notification::class.java)
-        val title = "TestTitel"
-        val message = "TestMessage"
-        intent.putExtra(titleExtra, title)
-        intent.putExtra(messageExtra, message)
 
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            NOTIFICATIONID,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        val time = getTime()
-        val alarmManager = context?.getSystemService(ALARM_SERVICE) as AlarmManager
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            time,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-        showAlert(time, title, message)
-    }
-
-    private fun showAlert(time: Long, title: String, message: String) {
-        val date = Date(time)
-        val dateFormat = android.text.format.DateFormat.getLongDateFormat(context)
-        val timeFormat = android.text.format.DateFormat.getTimeFormat(context)
-
-        AlertDialog.Builder(context)
-            .setTitle("Notification scheduled")
-            .setMessage(
-                "Title: " + title +
-                "\nMessage: " + message +
-                "\nAt: "+ dateFormat.format(date) + " " + timeFormat.format(date))
-            .setPositiveButton("Okay"){_,_ ->}
-            .show()
-    }
-
-    private fun getTime() : Long{
-        return System.currentTimeMillis() +1000
-    }
-
-    private fun createNotificationChannel() {
-        val name = "Notification Channel"
-        val desc = "Channel description"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(CHANNELID, name, importance)
-        channel.description = desc
-        val notificationManager = context?.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,7 +1,6 @@
 package be.dekade.weekplanner
 
 import androidx.lifecycle.*
-import be.dekade.weekplanner.data.Activiteit
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensDag
 import be.dekade.weekplanner.data.ActiviteitEnDagGegevensRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

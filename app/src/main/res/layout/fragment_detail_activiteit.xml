@@ -116,7 +116,7 @@
                 android:id="@+id/maandag_checkbox"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:checked="@={viewModel.maandag}"
+                android:checked="@={viewModel.isMaandag}"
                 android:text="@string/maandag"
                 android:textSize="@dimen/font_size"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -217,6 +217,7 @@
                 android:layout_height="wrap_content"
                 android:drawableLeft="@android:drawable/ic_menu_delete"
                 android:text="@string/verwijderen"
+                android:onClick="@{() -> viewModel.deleteActiviteit()}"
                 app:layout_constraintEnd_toStartOf="@id/bewaren_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/notificatie_checkbox" />

@@ -58,6 +58,16 @@
             android:textSize="@dimen/font_size"
             android:text="@{data.dagGegevens.uitstelUur > 0 ? @string/uur_format(data.dagGegevens.uitstelUur, data.dagGegevens.uitstelMinuut) : @string/uur_format(data.activiteit.startuur, data.activiteit.startminuut)}"
             tools:text="8:00"/>
+        <TextView
+            android:id="@+id/notities_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/uur"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{data.activiteit.notities}"
+            tools:text="nodig: tandenborstel, tandpasta \n poets elk kwadrant 30 seconden."
+            android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
+            />
         <ImageView
             android:id="@+id/expand_icon"
             android:layout_width="wrap_content"
@@ -85,7 +95,7 @@
             android:layout_height="wrap_content"
             android:text="@string/activiteit_aanpassen"
             android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toBottomOf="@id/uur"
+            app:layout_constraintTop_toBottomOf="@id/notities_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/uitstellen_button"
             android:drawableLeft="@android:drawable/ic_menu_edit"
@@ -100,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/aanpassen_button"
             android:visibility="@{isExpanded? View.VISIBLE : View.GONE}"
-            app:layout_constraintTop_toBottomOf="@id/uur"
+            app:layout_constraintTop_toBottomOf="@id/notities_text"
             android:onClick="@{uitstellenClickListener}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

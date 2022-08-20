@@ -13,7 +13,7 @@ class WeekdagPagerAdapter(f: Fragment): FragmentStateAdapter(f){
     override fun createFragment(position: Int): Fragment {
         val fragment = DagoverzichtFragment()
         fragment.arguments = Bundle().apply {
-            putInt(ARG_WEEKDAG, position)
+            putInt(ARG_WEEKDAG, (position +1)%7+1) //formule is transformatie naar Calendar.SPECIFIEKEWEEKDAG integers
         }
         return fragment
     }

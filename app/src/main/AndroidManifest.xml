@@ -3,6 +3,7 @@
     package="be.dekade.weekplanner">
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -11,8 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Weekplanner">
-        <receiver android:name=".helpers.MyNotification"
-            android:enabled="true"/>
+        <receiver android:name=".helpers.NotificationHelper"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".helpers.AlarmReceiver"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
